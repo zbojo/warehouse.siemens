@@ -9,8 +9,8 @@ POST http://localhost:5081/products
 Content-Type: application/json
 
 {
-    "name": "New product",
-    "price": 22.22,
+    "name": "",
+    "price": -1,
     "stockQuantity": 5
 }
 
