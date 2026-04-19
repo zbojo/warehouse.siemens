@@ -1,2 +1,23 @@
 ###
 GET http://localhost:5081/products
+
+###
+GET http://localhost:5081/products/2
+
+###
+POST http://localhost:5081/products
+Content-Type: application/json
+
+{
+    "name": "New product",
+    "price": 22.22,
+    "stockQuantity": 5
+}
+
+###
+PUT http://localhost:5081/products/1
+Content-Type: application/json
+
+{
+    "name": "apple-new"
+}

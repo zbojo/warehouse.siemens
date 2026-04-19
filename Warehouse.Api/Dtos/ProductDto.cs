@@ -1,6 +1,6 @@
 namespace Warehouse.Api.Dtos;
 
-public record ProductDtos (
+public record ProductDto (
     int Id,
     string Name,
     decimal Price,
