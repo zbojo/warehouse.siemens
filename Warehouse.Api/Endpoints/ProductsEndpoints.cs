@@ -1,4 +1,4 @@
-using System;
+using System.Text.Json;
 using Warehouse.Api.Dtos;
 
 namespace Warehouse.Api.Endpoints;
@@ -6,73 +6,57 @@ namespace Warehouse.Api.Endpoints;
 public static class ProductsEndpoints
 {
     const string GetProductEndpoint = "GetProduct";
-    private static readonly List<ProductDto> products = [
-        new (
-            1,
-            "apple",
-            2.35M,
-            4
-        ),
-        new (
-            2,
-            "banana",
-            3.49M,
-            10
-        ),
-        new (
-            3,
-            "kiwi",
-            3.11M,
-            3
-        ),
-    ];
+    private static readonly string FilePath = "inventory.json";
+
+    private static List<ProductDto> LoadProducts()
+    {
+        if (!File.Exists(FilePath))
+            return new List<ProductDto>();
+
+        string json = File.ReadAllText(FilePath);
+        return JsonSerializer.Deserialize<List<ProductDto>>(json) ?? new List<ProductDto>();
+    }
+
+    private static void SaveProducts(List<ProductDto> products)
+    {
+        string json = JsonSerializer.Serialize(products, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+        File.WriteAllText(FilePath, json);
+    }
 
     public static void MapProductsEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/products");
 
-        // GET /products 
-        group.MapGet("/", () => products );
+        group.MapGet("/", () => LoadProducts());
 
-        // GET /products/{id} 
-        group.MapGet("/{id}", (int id) => {
-            var product = products.Find(product => product.Id == id);
-
+        group.MapGet("/{id}", (int id) =>
+        {
+            var product = LoadProducts().Find(p => p.Id == id);
             return product is null ? Results.NotFound() : Results.Ok(product);
         })
         .WithName(GetProductEndpoint);
 
-        // POST /products 
         group.MapPost("/", (CreateProductDto newProduct) =>
         {
-            ProductDto product = new (
-                products.Count + 1,
-                newProduct.Name,
-                newProduct.Price,
-                newProduct.StockQuantity
-            );
+            var products = LoadProducts();
+            int newId = products.Count > 0 ? products.Max(p => p.Id) + 1 : 1;
+            var product = new ProductDto(newId, newProduct.Name, newProduct.Price, newProduct.StockQuantity);
             products.Add(product);
-
-            return Results.CreatedAtRoute(GetProductEndpoint, new {id = product.Id}, product);
-
+            SaveProducts(products);
+            return Results.CreatedAtRoute(GetProductEndpoint, new { id = product.Id }, product);
         });
 
-        // PUT /products/{id} 
         group.MapPut("/{id}", (int id, UpdatedProductDto updatedProduct) =>
         {
-            int index = products.FindIndex(product => product.Id == id);
-
+            var products = LoadProducts();
+            int index = products.FindIndex(p => p.Id == id);
             if (index == -1) return Results.NotFound();
-
-            products[index] = new ProductDto (
-                id,
-                updatedProduct.Name,
-                updatedProduct.Price,
-                updatedProduct.StockQuantity
-            );
-
+            products[index] = new ProductDto(id, updatedProduct.Name, updatedProduct.Price, updatedProduct.StockQuantity);
+            SaveProducts(products);
             return Results.NoContent();
-
         });
     }
 }

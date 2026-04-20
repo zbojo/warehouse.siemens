@@ -1,0 +1,8 @@
+[
+  {
+    "Id": 1,
+    "Name": "Product 1",
+    "Price": 5.99,
+    "StockQuantity": 20
+  }
+]
