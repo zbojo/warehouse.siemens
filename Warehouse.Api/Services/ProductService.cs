@@ -32,7 +32,7 @@ public class ProductService : IProductService
     public ProductDto Create(CreateProductDto newProduct)
     {
         var products = LoadProducts();
-        int newId = products.Count + 1;
+        int newId = products.Count == 0 ? 1 : products.Max(product => product.Id) + 1;
         var product = new ProductDto(newId, newProduct.Name, newProduct.Price, newProduct.StockQuantity);
         products.Add(product);
         SaveProducts(products);
