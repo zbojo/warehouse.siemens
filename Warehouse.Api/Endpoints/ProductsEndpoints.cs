@@ -28,7 +28,7 @@ public static class ProductsEndpoints
 
     public static void MapProductsEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/products");
+        var group = app.MapGroup("/api/products");
 
         group.MapGet("/", () => LoadProducts());
 
