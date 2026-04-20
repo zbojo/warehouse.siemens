@@ -20,7 +20,7 @@ public static class ProductsEndpoints
             10
         ),
         new (
-            2,
+            3,
             "kiwi",
             3.11M,
             3
