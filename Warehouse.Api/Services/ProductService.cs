@@ -3,16 +3,14 @@ using Warehouse.Api.Dtos;
 
 namespace Warehouse.Api.Services;
 
-public class ProductService : IProductService
+public class ProductService(string filePath) : IProductService
 {
-    private const string FilePath = "inventory.json";
-
     private List<ProductDto> LoadProducts()
     {
-        if (!File.Exists(FilePath))
+        if (!File.Exists(filePath))
             return new List<ProductDto>();
 
-        string json = File.ReadAllText(FilePath);
+        string json = File.ReadAllText(filePath);
         return JsonSerializer.Deserialize<List<ProductDto>>(json) ?? new List<ProductDto>();
     }
 
@@ -22,7 +20,7 @@ public class ProductService : IProductService
         {
             WriteIndented = true
         });
-        File.WriteAllText(FilePath, json);
+        File.WriteAllText(filePath, json);
     }
 
     public List<ProductDto> GetAll() => LoadProducts();
