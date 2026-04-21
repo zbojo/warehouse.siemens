@@ -1,11 +1,13 @@
-###
-GET http://localhost:5081/products
+@host = http://localhost:5081
 
 ###
-GET http://localhost:5081/products/5
+GET {{host}}/api/products
 
 ###
-POST http://localhost:5081/products
+GET {{host}}/api/products/1
+
+###
+POST {{host}}/api/products
 Content-Type: application/json
 
 {
@@ -15,9 +17,21 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:5081/products/1
+PUT {{host}}/api/products/1
 Content-Type: application/json
 
 {
-    "name": "apple-new"
+    "name": "apple-new",
+    "price": 7.99,
+    "stockQuantity": 15
+}
+
+###
+POST {{host}}/api/products
+Content-Type: application/json
+
+{
+    "name": "Invalid",
+    "price": -10,
+    "stockQuantity": 5
 }

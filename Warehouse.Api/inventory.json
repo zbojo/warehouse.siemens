@@ -1,6 +1,12 @@
 [
   {
     "Id": 1,
+    "Name": "apple-new",
+    "Price": 7.99,
+    "StockQuantity": 15
+  },
+  {
+    "Id": 2,
     "Name": "Product 1",
     "Price": 5.99,
     "StockQuantity": 20
